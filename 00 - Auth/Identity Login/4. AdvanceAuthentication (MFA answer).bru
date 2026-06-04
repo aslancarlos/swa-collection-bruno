@@ -1,0 +1,41 @@
+meta {
+  name: 4. AdvanceAuthentication (MFA answer)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{IDENTITY_POD_URL}}/Security/AdvanceAuthentication
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-IDAP-NATIVE-CLIENT: true
+  Authorization:
+}
+
+body:json {
+  {
+    "SessionId": "{{SESSION_ID}}",
+    "MechanismId": "{{MFA_MECH}}",
+    "Action": "Answer",
+    "Answer": "{{MFA_CODE}}"
+  }
+}
+
+script:post-response {
+  const r = (res.getBody() && res.getBody().Result) || {};
+  if (r.Token || r.AuthData) bru.setEnvVar('IDENTITY_JWT', r.Token || r.AuthData);
+}
+
+docs {
+  # 4. AdvanceAuthentication (MFA - code)
+
+  Sends the MFA code (env **MFA_CODE**). On success, writes **IDENTITY_JWT**.
+
+  After this step, run `00 - Auth / Exchange Identity JWT for Token`
+  to obtain the **TOKEN** from the IDENTITY_JWT.
+}

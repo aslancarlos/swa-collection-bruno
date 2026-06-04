@@ -1,0 +1,46 @@
+meta {
+  name: 8. Load Workloads Group
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/policies/conjur/policy/data/swa/trust-domains/{{TRUST_DOMAIN_NAME}}
+  body: text
+  auth: none
+}
+
+headers {
+  Content-Type: text/yaml
+}
+
+body:text {
+  - !group
+    id: workloads
+  
+  - !host
+    id: workloads/spiffe://example.machineid/k8s-prod-ng/ns/conjur/sa/conjur-sa-swa
+    annotations:
+      authn-jwt/secureWorkloadAccess/sub: spiffe://example.machineid/k8s-prod-ng/ns/conjur/sa/conjur-sa-swa
+  
+  - !host
+    id: workloads/spiffe://example.machineid/k8s-prod-ng/ns/swa-clients/sa/swa-id-sa
+    annotations:
+      authn-jwt/secureWorkloadAccess/sub: spiffe://example.machineid/k8s-prod-ng/ns/swa-clients/sa/swa-id-sa
+  
+  - !grant
+    role: !group workloads
+    member:
+      - !host workloads/spiffe://example.machineid/k8s-prod-ng/ns/conjur/sa/conjur-sa-swa
+      - !host workloads/spiffe://example.machineid/k8s-prod-ng/ns/swa-clients/sa/swa-id-sa
+}
+
+docs {
+  # 8. Load Workloads Group
+
+  POST .../policy/data/swa/trust-domains/{td}
+
+  Creates the `workloads` group, declares the 2 hosts (id = SPIFFE ID) annotated with
+  `authn-jwt/secureWorkloadAccess/sub`, and performs the grant. `!grant` uses `member:` (a list).
+  The host id embeds the full SPIFFE ID (including `spiffe://`).
+}

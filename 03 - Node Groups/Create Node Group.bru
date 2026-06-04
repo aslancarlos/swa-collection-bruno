@@ -1,0 +1,51 @@
+meta {
+  name: Create Node Group
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups/{{SERVER_GROUP_NAME}}/node-groups
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{NODE_GROUP_NAME}}",
+    "workload_type": "{{WORKLOAD_TYPE}}",
+    "description": "Production node group",
+    "workload_configuration": {
+      "workload_registration_policies": [
+        "k8s.ns == 'swa-server' && k8s.sa == 'swa-server'"
+      ]
+    }
+  }
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  # Create Node Group
+
+  POST /api/swa/trust-domains/{trust-domain-name}/server-groups/{server-group-name}/node-groups
+
+  Step 3. Group of nodes/workloads within the server group.
+
+  ## Body
+  - **name** (required) - 1-60 chars. In k8s, it must match the pod label `swa_nodegroup`
+    in the SWA Agent. In x509 PoP, it must match the CN of the node certificate.
+  - **workload_type** (required) - "kubernetes" or "unix". Defines the default SPIFFE
+    template and which attestation selectors you can use in the registration policies.
+  - **description** (optional)
+  - **workload_configuration** (optional):
+    - workload_registration_policies: array of CEL expressions. At least one must
+      evaluate to TRUE for SWA to issue an SVID. If omitted, it issues to all workloads
+      on attested nodes. k8s variables: k8s.ns, k8s.sa, etc.
+    - spiffe_id_template: Go template. Must start with
+      spiffe://(trustdomain)/(nodegroup)/ . If omitted, uses the workload_type default.
+
+  ## Responses: 201 ok · 400 · 401 · 403 · 404 · 409 · 422 · 500
+}

@@ -1,0 +1,35 @@
+meta {
+  name: 0. StartAuthentication (discover pod)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{IDENTITY_INIT_URL}}/Security/StartAuthentication
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-IDAP-NATIVE-CLIENT: true
+  Authorization:
+}
+
+body:json {
+  {
+    "User": "{{IDENTITY_USER}}",
+    "Version": "1.0",
+    "Platform": "Web"
+  }
+}
+
+docs {
+  # 0. StartAuthentication (discover pod)
+
+  POST {{IDENTITY_INIT_URL}}/Security/StartAuthentication
+
+  Optional: discovers the tenant's `Result.PodFqdn`. We already know it is
+  `YOUR_IDENTITY_POD_HOST` (env IDENTITY_POD_URL), so you can skip straight to step 1.
+}

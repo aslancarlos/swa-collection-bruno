@@ -1,0 +1,53 @@
+headers {
+  Accept: application/x.secretsmgr.v2+json
+  Content-Type: application/json
+  Authorization: Token token="{{TOKEN}}"
+}
+
+docs {
+  # SWA - Secure Workload Access - tenant YOUR_TENANT
+
+  Collection for creating and operating the **Secure Workload Access (SWA)**
+  hierarchy via the Secure Workload Access REST API.
+
+  ## Hierarchy (creation order)
+  1. **Trust Domain**  - SPIFFE trust root (signing keys, TTLs).
+  2. **Server Group**  - group of SWA servers + node attestation (k8s PSAT or x509 PoP).
+  3. **Node Group**    - group of nodes/workloads within the server group (kubernetes or unix).
+  4. **Server**        - registers an SWA server (component) with JWT authentication.
+
+  Folders 01..04 follow this order. Each folder has Create + List + Get.
+
+  ## Authentication
+  All calls use the header (already defined at the collection level):
+
+      Authorization: Token token="{{TOKEN}}"
+
+  `TOKEN` is the **access token** (base64 of the token JSON), NOT a Bearer.
+  The SWA endpoints require the **Secure Workload Access Admin** role, which the
+  user@example.com user has.
+
+  Folder **00 - Auth** (in order of preference):
+  1. **Exchange Identity JWT for Token** (the flow we use): run `identity-token.py`
+     (password + MFA) -> paste the JWT into `IDENTITY_JWT` -> this request exchanges it for an
+     access token via authn-oidc and writes it to `TOKEN` automatically.
+  2. **Get Token (host)**: authenticates the host `data/YOUR_HOST` with `HOST_API_KEY`.
+     Token AS THE HOST (admin over data/*, but not Secure Workload Access Admin) -> SWA may return 403.
+     Useful for general calls, not for SWA admin.
+
+  Manual alternative: after login, extract from the Keychain (service
+  `.../authn-cloud/cyberark`, account `authn_token`, without the `go-keyring-base64:` prefix).
+
+  ## Discovery endpoints (public)
+  Folder 01 includes Get CA Bundles / OIDC Discovery / JWKS for the trust domain
+  (`.well-known/*`). The **CA Bundles** is the URL used in the SWA Agent bootstrap
+  (`bootstrap.bundleSourceUrl`).
+
+  ## Cluster deployment (outside Bruno)
+  After registering the Server (folder 04), the SWA Server and the Agents are installed on
+  Kubernetes via Helm (charts in `~/swa/helm`). See this collection's README.md for the
+  exact values (image docker.io/YOUR_REGISTRY, trustDomain, loginURL, bootstrap, etc.).
+
+  ## Environment
+  Select the **example** environment. Variables in `environments/YOUR_TENANT.bru`.
+}

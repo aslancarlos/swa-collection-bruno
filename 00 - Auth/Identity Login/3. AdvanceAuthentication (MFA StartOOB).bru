@@ -1,0 +1,34 @@
+meta {
+  name: 3. AdvanceAuthentication (MFA StartOOB)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{IDENTITY_POD_URL}}/Security/AdvanceAuthentication
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-IDAP-NATIVE-CLIENT: true
+  Oobidpauth: true
+  Authorization:
+}
+
+body:json {
+  {
+    "SessionId": "{{SESSION_ID}}",
+    "MechanismId": "{{MFA_MECH}}",
+    "Action": "StartOOB"
+  }
+}
+
+docs {
+  # 3. AdvanceAuthentication (MFA - StartOOB)
+
+  Only for out-of-band mechanisms (Email/SMS/Phone): triggers sending the code.
+  For OTP/TOTP (authenticator app), skip this step and go straight to step 4.
+}

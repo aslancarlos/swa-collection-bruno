@@ -1,0 +1,19 @@
+meta {
+  name: 6. Set var - audience
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/secrets/conjur/variable/conjur/authn-jwt/{{AUTHN_JWT_ID}}/audience
+  body: text
+  auth: none
+}
+
+body:text {
+  {{JWT_AUDIENCE}}
+}
+
+docs {
+  # Set var audience  (POST /api/secrets/conjur/variable/<id>) - body = value.
+}

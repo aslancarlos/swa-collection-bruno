@@ -1,0 +1,51 @@
+meta {
+  name: Update Node Group
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups/{{SERVER_GROUP_NAME}}/node-groups/{{NODE_GROUP_NAME}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "workload_configuration": {
+      "workload_registration_policies": [
+        "{{WL_POLICY_1}}",
+        "{{WL_POLICY_2}}"
+      ]
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Update Node Group (PATCH)
+
+  PATCH /api/swa/trust-domains/{td}/server-groups/{sg}/node-groups/{node-group-name}
+
+  Updates node group fields. Send only what you want to change (`description` and/or
+  `workload_configuration`). For `workload_registration_policies`, the array you send
+  **REPLACES** the previous one (it is not a merge).
+
+  ## Current usage
+  Defines which workloads receive an SVID in this node group. Here we allow:
+  - `{{WL_POLICY_1}}`
+  - `{{WL_POLICY_2}}`
+
+  (this replaced the test policy `k8s.ns == 'swa-server' && k8s.sa == 'swa-server'`.)
+
+  Each entry is a CEL expression; at least one must evaluate to TRUE to issue an SVID.
+  Available k8s variables: `k8s.ns`, `k8s.sa`, etc.
+
+  You can also update `workload_configuration.spiffe_id_template` (must start with
+  `spiffe://(trustdomain)/(nodegroup)/`).
+
+  ## Responses: 200 ok · 400 · 401 · 403 · 404 · 422 · 500
+}

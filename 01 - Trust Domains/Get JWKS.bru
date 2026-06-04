@@ -1,0 +1,24 @@
+meta {
+  name: Get JWKS
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/.well-known/jwks
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Get JWKS (trust domain)
+
+  GET /api/swa/trust-domains/{trust-domain-name}/.well-known/jwks
+
+  Public keys (JWKS) that validate the JWT-SVIDs issued by SWA in this trust domain.
+  One of the trust domain's `discovery_endpoints`. Public.
+}

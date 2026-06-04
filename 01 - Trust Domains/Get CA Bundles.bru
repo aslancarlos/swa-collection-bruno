@@ -1,0 +1,28 @@
+meta {
+  name: Get CA Bundles
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/.well-known/ca-bundles
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Get CA Bundles (trust domain trust bundle)
+
+  GET /api/swa/trust-domains/{trust-domain-name}/.well-known/ca-bundles
+
+  Returns the CA bundles (root/intermediate) that the SWA Server published (firefly root CA).
+  **Public** endpoint (.well-known) - no token required.
+
+  This is exactly the URL used in the **SWA Agent bootstrap**:
+  `--set bootstrap.bundleSourceUrl=<this URL>`. The agent downloads the trust bundle from here
+  to trust the server on the first connection.
+}

@@ -1,0 +1,54 @@
+meta {
+  name: Exchange Identity JWT for Access Token
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/authn-oidc/{{OIDC_SERVICE_ID}}/{{CONJUR_ACCOUNT}}/authenticate
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+  Accept-Encoding: base64
+  Authorization:
+}
+
+body:form-urlencoded {
+  id_token: {{IDENTITY_JWT}}
+}
+
+script:post-response {
+  if (res.getStatus() === 200) {
+    let body = res.getBody();
+    if (typeof body !== 'string') body = String(body);
+    // response already comes base64-encoded (Accept-Encoding: base64) -> ready for Token token=
+    bru.setEnvVar('TOKEN', body.trim());
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Exchange Identity JWT -> access token (the flow we use)
+
+  POST /api/authn-oidc/{service-id}/{account}/authenticate
+
+  Exchanges the **Identity JWT** (OIDC) for the **access token** that the
+  SWA endpoints require in the `Authorization: Token token="..."` header.
+
+  This is the flow we actually use:
+  1. Run `identity-token.py -i user@example.com` (password + MFA) -> copy the JWT.
+  2. Paste the JWT into the **IDENTITY_JWT** env secret.
+  3. Send this request: with `Accept-Encoding: base64` the response already comes base64-encoded,
+     and the post-response script writes it to **TOKEN** automatically.
+
+  - service-id = `cyberark` (env OIDC_SERVICE_ID), account = `conjur` (env CONJUR_ACCOUNT).
+  - The admin user has the **Secure Workload Access Admin** role (visible in the
+    JWT user_roles), satisfying the Secure Workload Access Admin requirement of the SWA endpoints.
+  - The Identity JWT expires in ~15 min; the resulting access token, in ~1h.
+}

@@ -1,0 +1,36 @@
+vars {
+  TENANT_SUBDOMAIN: YOUR_TENANT
+  SWA_API_BASE: https://YOUR_SWA_API_HOST
+  OIDC_SERVICE_ID: cyberark
+  CONJUR_ACCOUNT: conjur
+  TRUST_DOMAIN_NAME: example.machineid
+  SERVER_GROUP_NAME: k8s-prod
+  NODE_GROUP_NAME: k8s-prod-ng
+  SERVER_NAME: swa-server-a
+  K8S_CLUSTER_ID: YOUR_CLUSTER
+  SWA_SA_ALLOWLIST: swa-server:swa-server
+  PSAT_AUDIENCE: swa-server
+  WORKLOAD_TYPE: kubernetes
+  JWT_AUDIENCE: conjur
+  JWT_SUB: system:serviceaccount:swa-server:swa-server
+  EKS_ISSUER: https://oidc.eks.YOUR_REGION.amazonaws.com/id/YOUR_EKS_OIDC_ID
+  EKS_JWKS_URI: https://oidc.eks.YOUR_REGION.amazonaws.com/id/YOUR_EKS_OIDC_ID/keys
+  WL_POLICY_1: k8s.ns == 'conjur' && k8s.sa == 'conjur-sa-swa'
+  WL_POLICY_2: k8s.ns == 'swa-clients' && k8s.sa == 'swa-id-sa'
+  AUTHN_JWT_ID: secureWorkloadAccess
+  SECRET_ID: data/swa/secrets/myapp/api-key
+  IDENTITY_INIT_URL: https://YOUR_IDENTITY_INIT_HOST
+  IDENTITY_POD_URL: https://YOUR_IDENTITY_POD_HOST
+  IDENTITY_USER: user@example.com
+  SESSION_ID: 
+  PWD_MECH: 
+  MFA_MECH: 
+  MFA_CODE: 
+}
+vars:secret [
+  TOKEN,
+  IDENTITY_JWT,
+  IDENTITY_PASSWORD,
+  HOST_API_KEY,
+  SVID
+]

@@ -1,0 +1,53 @@
+meta {
+  name: Create Trust Domain
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{TRUST_DOMAIN_NAME}}",
+    "jwt": {
+      "signing_key_type": "RSA_4096",
+      "signature_algorithm": "RS512",
+      "signing_key_ttl": 86400,
+      "token_ttl": 300
+    },
+    "x509": {
+      "workload_ttl": 3600
+    }
+  }
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  # Create Trust Domain
+
+  POST /api/swa/trust-domains
+
+  Creates the SPIFFE trust root. Step 1 of the hierarchy.
+
+  ## Body
+  - **name** (required) - 1-60 chars, case-sensitive, letters/numbers/. _ -
+  - **jwt** (optional) - JWT-SVID signing configuration:
+    - signing_key_type: EC_P256/EC_P384/EC_P521/RSA_2048/RSA_4096 (default RSA_4096)
+    - signature_algorithm: ES256/384/512 or RS256/384/512 (default RS512)
+    - signing_key_ttl: 3600..2592000 sec (default 86400)
+    - token_ttl: 60..86400 sec (default 300)
+  - **x509** (optional) - workload_ttl: 600..86400 sec
+
+  ## Compatibility note
+  The Secure Workload Access JWT authenticator accepts ONLY JWTs signed with RSA (RS*
+  with RSA_*). We keep RSA_4096 + RS512 for the k8s secrets retrieval flow.
+
+  ## Responses: 201 ok · 400 · 401 · 403 · 409 (already exists) · 422 · 500
+}

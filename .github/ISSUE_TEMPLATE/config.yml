@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report (do not open a public issue)
+    url: https://github.com/aslancarlos/swa-collection-bruno/blob/main/SECURITY.md
+    about: Please report secrets/credential leaks or vulnerabilities privately. See SECURITY.md.
+  - name: Official Secure Workload Access documentation
+    url: https://docs.paloaltonetworks.com/
+    about: Always defer to the latest official Secure Workload Access documentation — this collection is unofficial and may differ.

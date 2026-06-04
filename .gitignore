@@ -1,0 +1,24 @@
+# ── Secrets / runtime (NEVER commit) ─────────────────────────────
+*.env
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*-token*
+*secret*.json
+.bruno-secrets
+bruno-secrets.*
+**/secrets.local.*
+
+# ── Bruno local state ────────────────────────────────────────────
+.bruno/
+
+# ── OS / editor noise ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~

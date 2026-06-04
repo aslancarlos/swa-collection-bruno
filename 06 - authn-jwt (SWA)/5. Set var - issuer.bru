@@ -1,0 +1,19 @@
+meta {
+  name: 5. Set var - issuer
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/secrets/conjur/variable/conjur/authn-jwt/{{AUTHN_JWT_ID}}/issuer
+  body: text
+  auth: none
+}
+
+body:text {
+  {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}
+}
+
+docs {
+  # Set var issuer  (POST /api/secrets/conjur/variable/<id>) - body = value.
+}

@@ -1,0 +1,66 @@
+meta {
+  name: Register Server
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups/{{SERVER_GROUP_NAME}}/components
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{SERVER_NAME}}",
+    "authentication": {
+      "type": "JWT",
+      "data": {
+        "audience": "{{JWT_AUDIENCE}}",
+        "jwks_uri": "{{EKS_JWKS_URI}}",
+        "issuer": "{{EKS_ISSUER}}",
+        "sub": "{{JWT_SUB}}"
+      }
+    }
+  }
+}
+
+script:post-response {
+  if (res.getStatus() === 201) {
+    const b = res.getBody();
+    if (b && b.authn_id)  bru.setEnvVar('SERVER_AUTHN_ID', b.authn_id);
+    if (b && b.login_url) bru.setEnvVar('SERVER_LOGIN_URL', b.login_url);
+  }
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  # Register Server (SWA component)
+
+  POST /api/swa/trust-domains/{trust-domain-name}/server-groups/{server-group-name}/components
+
+  Step 4 (final goal). Registers an SWA server with JWT authentication.
+
+  ## Body
+  - **name** (required) - 1-51 chars.
+  - **authentication.type** (required) - "JWT".
+  - **authentication.data** (required) - JWT authenticator config:
+    - audience - expected value of the aud claim (Helm default: conjur).
+    - jwks_uri - JWKS endpoint used to validate the signature of the workload's JWT.
+    - issuer   - expected issuer.
+    - sub      - subject claim that identifies the server (system:serviceaccount:NS:SA).
+    - ca_cert (optional) - CA PEM when the JWKS requires a custom CA (not needed for public EKS).
+
+  ## Values (cluster YOUR_CLUSTER, EKS YOUR_REGION)
+  - issuer/jwks_uri: env EKS_ISSUER / EKS_JWKS_URI (EKS OIDC, public).
+  - sub: env JWT_SUB (system:serviceaccount:swa-server:swa-server).
+
+  ## Response 201
+  Returns name, authentication, and **authn_id** (base64 id of the authenticator) + **login_url**.
+  The post-response script saves authn_id to SERVER_AUTHN_ID and login_url to SERVER_LOGIN_URL.
+
+  ## Responses: 201 ok · 400 · 401 · 403 · 404 (server group) · 409 (name already exists) · 422 · 500
+}

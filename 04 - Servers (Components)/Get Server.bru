@@ -1,0 +1,21 @@
+meta {
+  name: Get Server
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups/{{SERVER_GROUP_NAME}}/components/{{SERVER_NAME}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Get Server
+
+  GET .../server-groups/{server-group-name}/components/{server-name}
+}

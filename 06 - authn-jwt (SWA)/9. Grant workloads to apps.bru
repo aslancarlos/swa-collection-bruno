@@ -1,0 +1,30 @@
+meta {
+  name: 9. Grant workloads to apps
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/policies/conjur/policy/conjur/authn-jwt/{{AUTHN_JWT_ID}}
+  body: text
+  auth: none
+}
+
+headers {
+  Content-Type: text/yaml
+}
+
+body:text {
+  - !grant
+    role: !group apps
+    member: !group /data/swa/trust-domains/example.machineid/workloads
+}
+
+docs {
+  # 9. Grant workloads -> apps
+
+  POST .../policy/conjur/authn-jwt/{id}
+
+  Gives the `workloads` group (data) access to the authenticator's `apps` group
+  (read + authenticate on the webservice). Absolute reference /data/... is allowed.
+}

@@ -1,0 +1,23 @@
+meta {
+  name: List Server Groups
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # List Server Groups
+
+  GET /api/swa/trust-domains/{trust-domain-name}/server-groups
+
+  Lists the server groups in the trust domain. Returns count + server_groups array.
+}

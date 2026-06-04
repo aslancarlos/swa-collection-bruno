@@ -1,0 +1,52 @@
+meta {
+  name: Create Server Group
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{SERVER_GROUP_NAME}}",
+    "description": "SWA servers - YOUR_CLUSTER EKS",
+    "node_attestation": {
+      "k8s_psat": {
+        "clusters": {
+          "{{K8S_CLUSTER_ID}}": {
+            "service_account_allow_list": ["{{SWA_SA_ALLOWLIST}}"],
+            "audience": ["{{PSAT_AUDIENCE}}"]
+          }
+        }
+      }
+    }
+  }
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  # Create Server Group
+
+  POST /api/swa/trust-domains/{trust-domain-name}/server-groups
+
+  Step 2. Group of SWA servers + node attestation. Include at least one attestation
+  type in node_attestation: k8s_psat (Kubernetes) or x509pop (X.509 PoP).
+
+  ## k8s_psat (used here)
+  - clusters: map of chosenId -> cluster config:
+    - service_account_allow_list: SAs in namespace:serviceaccount format (e.g. swa-server:swa-server)
+    - audience: audiences accepted in projected SA tokens (e.g. swa-server)
+    - allowed_node_label_keys / allowed_pod_label_keys / kube_config_file (optional)
+
+  ## x509pop (alternative)
+  - ca_certificates: PEM bundle of the CAs.
+
+  ## Responses: 201 ok · 400 · 401 · 403 · 404 (trust domain) · 409 · 422 · 500
+}

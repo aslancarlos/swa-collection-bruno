@@ -1,0 +1,55 @@
+meta {
+  name: 1. Load Authenticator Policy
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/policies/conjur/policy/conjur/authn-jwt
+  body: text
+  auth: none
+}
+
+headers {
+  Content-Type: text/yaml
+}
+
+body:text {
+  - !policy
+    id: secureWorkloadAccess
+    body:
+      - !webservice
+        annotations:
+          description: JWT authenticator for SWA
+      - !variable
+        id: jwks-uri
+      - !variable
+        id: token-app-property
+      - !variable
+        id: identity-path
+      - !variable
+        id: issuer
+      - !variable
+        id: audience
+      - !group
+        id: apps
+      - !permit
+        role: !group apps
+        privilege: [ read, authenticate ]
+        resource: !webservice
+      - !webservice status
+      - !group
+        id: operators
+      - !permit
+        role: !group operators
+        privilege: [ read ]
+        resource: !webservice status
+}
+
+docs {
+  # 1. Load Authenticator Policy
+
+  POST /api/policies/conjur/policy/conjur/authn-jwt  (additive load)
+
+  Creates the `secureWorkloadAccess` authenticator: webservice, 5 variables, apps/operators groups.
+}

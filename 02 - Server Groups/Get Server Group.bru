@@ -1,0 +1,21 @@
+meta {
+  name: Get Server Group
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups/{{SERVER_GROUP_NAME}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Get Server Group
+
+  GET /api/swa/trust-domains/{trust-domain-name}/server-groups/{server-group-name}
+}

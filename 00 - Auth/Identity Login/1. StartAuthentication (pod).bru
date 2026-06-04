@@ -1,0 +1,44 @@
+meta {
+  name: 1. StartAuthentication (pod)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{IDENTITY_POD_URL}}/Security/StartAuthentication
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-IDAP-NATIVE-CLIENT: true
+  Authorization:
+}
+
+body:json {
+  {
+    "User": "{{IDENTITY_USER}}",
+    "Version": "1.0",
+    "Platform": "Web"
+  }
+}
+
+script:post-response {
+  const r = (res.getBody() && res.getBody().Result) || {};
+  if (r.SessionId) bru.setEnvVar('SESSION_ID', r.SessionId);
+  (r.Challenges || []).forEach(function(ch){
+    (ch.Mechanisms || []).forEach(function(m){
+      if (m.Name === 'UP') bru.setEnvVar('PWD_MECH', m.MechanismId);
+    });
+  });
+}
+
+docs {
+  # 1. StartAuthentication (on the pod)
+
+  POST {{IDENTITY_POD_URL}}/Security/StartAuthentication
+
+  Starts the session. The script writes `SESSION_ID` and `PWD_MECH` (password mechanism, Name=UP).
+}

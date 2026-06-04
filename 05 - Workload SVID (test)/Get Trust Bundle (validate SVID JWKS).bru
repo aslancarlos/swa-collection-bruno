@@ -1,0 +1,68 @@
+meta {
+  name: Get Trust Bundle (validate SVID JWKS)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/.well-known/jwks
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Workload SVID Test (JWT-SVID)
+
+  The **SVID fetch is not HTTP** - it is done via the SWA Agent's Workload API over a Unix
+  socket (`/tmp/swa-agent/public/api.sock`), so it runs as a Pod in the cluster (kubectl),
+  not in Bruno. This HTTP request fetches the **trust domain JWKS** (public keys that
+  VALIDATE the JWT-SVID), and serves as a home for documenting the full test.
+
+  ## Prerequisite (important)
+  The Pod must match the `workload_registration_policy` of the node group `k8s-prod-ng`:
+  `k8s.ns == 'swa-server' && k8s.sa == 'swa-server'`. That is why the Pod runs in
+  namespace `swa-server` with SA `swa-server`. In any other ns/sa the agent DENIES issuance.
+  The Pod must also land on a node that has the swa-agent running (DaemonSet, 4/4 nodes).
+
+  ## Manifest (saved in ../svid-fetcher.yaml)
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: svid-fetcher
+    namespace: swa-server
+    labels:
+      app.kubernetes.io/name: svid-fetcher
+  spec:
+    restartPolicy: Never
+    serviceAccountName: swa-server
+    containers:
+      - name: svid-fetcher
+        image: docker.io/YOUR_REGISTRY/swa-agent:1.0.0-amd64
+        args: [api, fetch, jwt, --audience=conjur, --socketPath=/tmp/swa-agent/public/api.sock, --output=json]
+        volumeMounts:
+          - name: agent-socket
+            mountPath: /tmp/swa-agent
+    volumes:
+      - name: agent-socket
+        hostPath:
+          path: /tmp/swa-agent
+          type: Directory
+
+  ## Run and view the SVID
+  - kubectl apply -f svid-fetcher.yaml
+  - kubectl logs svid-fetcher -n swa-server      (JSON output with svids[] + bundles[])
+  - kubectl delete pod svid-fetcher -n swa-server
+
+  ## Returned SVID (decoded claims)
+  - sub (SPIFFE ID): spiffe://example.machineid/k8s-prod-ng/ns/swa-server/sa/swa-server
+  - iss: https://YOUR_SWA_API_HOST/api/swa/trust-domains/example.machineid
+  - aud: conjur   (controlled by --audience)
+  - validity: 300s (alg RS512)
+
+  The `sub` confirms the chain: trust domain -> node group -> workload ns/sa.
+  To allow other workloads, adjust the node group's workload_registration_policy.
+}

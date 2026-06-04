@@ -1,0 +1,19 @@
+meta {
+  name: 2. Set var - jwks-uri
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/secrets/conjur/variable/conjur/authn-jwt/{{AUTHN_JWT_ID}}/jwks-uri
+  body: text
+  auth: none
+}
+
+body:text {
+  {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/.well-known/jwks
+}
+
+docs {
+  # Set var jwks-uri  (POST /api/secrets/conjur/variable/<id>) - body = value.
+}

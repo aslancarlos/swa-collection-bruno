@@ -1,0 +1,44 @@
+meta {
+  name: 12. Authenticate (SVID to access token)
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/authn-jwt/{{AUTHN_JWT_ID}}/{{CONJUR_ACCOUNT}}/authenticate
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+  Accept-Encoding: base64
+  Authorization:
+}
+
+body:form-urlencoded {
+  jwt: {{SVID}}
+}
+
+script:post-response {
+  if (res.getStatus() === 200) {
+    let b = res.getBody();
+    if (typeof b !== 'string') b = String(b);
+    bru.setEnvVar('TOKEN', b.trim());   // already base64 (Accept-Encoding: base64)
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # 12. Authenticate (SVID -> access token)
+
+  POST /api/authn-jwt/{id}/{account}/authenticate  body: jwt=<JWT-SVID>
+
+  Paste the workload's JWT-SVID into the env secret **SVID** (obtained with the
+  `05 - Workload SVID` folder: `swa-agent api fetch jwt --audience conjur`).
+  With `Accept-Encoding: base64` the response is already ready for `Token token=` and is
+  stored in **TOKEN** automatically.
+}

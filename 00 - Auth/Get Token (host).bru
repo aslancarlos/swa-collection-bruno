@@ -1,0 +1,47 @@
+meta {
+  name: Get Token (host)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/authn/conjur/host%2Fdata%2FYOUR_HOST/authenticate
+  body: text
+  auth: none
+}
+
+headers {
+  Content-Type: text/plain
+  Authorization: 
+}
+
+body:text {
+  {{HOST_API_KEY}}
+}
+
+script:post-response {
+  if (res.getStatus() === 200) {
+    let body = res.getBody();
+    if (typeof body !== 'string') body = JSON.stringify(body);
+    bru.setEnvVar('TOKEN', Buffer.from(body).toString('base64'));
+    bru.setEnvVar('CONJUR_TOKEN_RAW', body);
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Get Token (host YOUR_HOST)
+
+  Authenticates the host `data/YOUR_HOST` using its API key (env `HOST_API_KEY`)
+  and captures the token in `TOKEN` (already base64-encoded, ready for the Token token= header).
+
+  IMPORTANT: this token authenticates AS THE HOST, which has admin over `data/*` but
+  is NOT Secure Workload Access Admin. The SWA endpoints may return 403. To operate SWA,
+  paste your user's token (admin, via login) into the `TOKEN` env.
+
+  - Body: the API key in plain text.
+  - The Authorization header is sent empty here (the endpoint uses the API key in the body).
+}

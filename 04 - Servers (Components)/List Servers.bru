@@ -1,0 +1,23 @@
+meta {
+  name: List Servers
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups/{{SERVER_GROUP_NAME}}/components
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # List Servers
+
+  GET .../server-groups/{server-group-name}/components
+
+  Lists the SWA servers (components) registered in the server group.
+}

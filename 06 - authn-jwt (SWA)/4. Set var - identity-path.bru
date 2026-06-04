@@ -1,0 +1,19 @@
+meta {
+  name: 4. Set var - identity-path
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/secrets/conjur/variable/conjur/authn-jwt/{{AUTHN_JWT_ID}}/identity-path
+  body: text
+  auth: none
+}
+
+body:text {
+  data/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/workloads
+}
+
+docs {
+  # Set var identity-path  (POST /api/secrets/conjur/variable/<id>) - body = value.
+}

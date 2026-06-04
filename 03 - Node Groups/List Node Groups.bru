@@ -1,0 +1,21 @@
+meta {
+  name: List Node Groups
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups/{{SERVER_GROUP_NAME}}/node-groups
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # List Node Groups
+
+  GET /api/swa/trust-domains/{trust-domain-name}/server-groups/{server-group-name}/node-groups
+}

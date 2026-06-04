@@ -1,0 +1,26 @@
+meta {
+  name: 7. Enable Authenticator
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{SWA_API_BASE}}/api/authn-jwt/{{AUTHN_JWT_ID}}/{{CONJUR_ACCOUNT}}
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+}
+
+body:form-urlencoded {
+  enabled: true
+}
+
+docs {
+  # 7. Enable Authenticator
+
+  PATCH /api/authn-jwt/{id}/{account}  body: enabled=true  -> HTTP 204.
+  Requires the Secure Workload Access Admin role (admin user token).
+}

@@ -1,0 +1,19 @@
+meta {
+  name: 3. Set var - token-app-property
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{SWA_API_BASE}}/api/secrets/conjur/variable/conjur/authn-jwt/{{AUTHN_JWT_ID}}/token-app-property
+  body: text
+  auth: none
+}
+
+body:text {
+  sub
+}
+
+docs {
+  # Set var token-app-property  (POST /api/secrets/conjur/variable/<id>) - body = value.
+}

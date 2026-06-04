@@ -1,0 +1,48 @@
+meta {
+  name: Update Server Group
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{SWA_API_BASE}}/api/swa/trust-domains/{{TRUST_DOMAIN_NAME}}/server-groups/{{SERVER_GROUP_NAME}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "description": "SWA servers - YOUR_CLUSTER EKS"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  # Update Server Group (PATCH)
+
+  PATCH /api/swa/trust-domains/{td}/server-groups/{server-group-name}
+
+  Updates server group fields. Send only what you want to change:
+  - **description** (String)
+  - **node_attestation** (Object) - `k8s_psat` and/or `x509pop` (same structure as Create).
+
+  Example to add/update the SA allow-list in a k8s_psat cluster:
+
+      {
+        "node_attestation": {
+          "k8s_psat": {
+            "clusters": {
+              "{{K8S_CLUSTER_ID}}": {
+                "service_account_allow_list": ["{{SWA_SA_ALLOWLIST}}"],
+                "audience": ["{{PSAT_AUDIENCE}}"]
+              }
+            }
+          }
+        }
+      }
+
+  ## Responses: 200 ok · 400 · 401 · 403 · 404 · 422 · 500
+}
