@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e1e2e"/>
+      <stop offset="1" stop-color="#181825"/>
+    </linearGradient>
+  </defs>
+
+  <!-- window -->
+  <rect x="8" y="8" width="944" height="584" rx="12" fill="url(#bg)" stroke="#313244" stroke-width="1.5"/>
+  <!-- title bar -->
+  <path d="M8 20 a12 12 0 0 1 12 -12 h920 a12 12 0 0 1 12 12 v24 h-944 z" fill="#11111b"/>
+  <circle cx="30" cy="32" r="6" fill="#f38ba8"/>
+  <circle cx="50" cy="32" r="6" fill="#f9e2af"/>
+  <circle cx="70" cy="32" r="6" fill="#a6e3a1"/>
+  <text x="480" y="37" fill="#bac2de" font-size="14" text-anchor="middle" font-weight="600">Bruno · Secure Workload Access</text>
+
+  <!-- sidebar -->
+  <rect x="8" y="44" width="300" height="548" fill="#181825"/>
+  <text x="28" y="78" fill="#f5c2e7" font-size="12" letter-spacing="1.5" font-weight="700">SECURE WORKLOAD ACCESS</text>
+  <line x1="24" y1="90" x2="292" y2="90" stroke="#313244"/>
+
+  <!-- folder list -->
+  <g font-size="13.5" fill="#cdd6f4">
+    <text x="30" y="120">▸ 📁 00 - Auth</text>
+    <text x="30" y="150" fill="#f9e2af" font-weight="700">▾ 📁 01 - Trust Domains</text>
+    <!-- expanded requests -->
+    <g font-size="12.5">
+      <rect x="52" y="160" width="236" height="22" rx="5" fill="#313244"/>
+      <text x="64" y="175"><tspan fill="#a6e3a1" font-weight="700">POST</tspan><tspan fill="#cdd6f4">  Create Trust Domain</tspan></text>
+      <text x="64" y="200"><tspan fill="#89b4fa" font-weight="700">GET</tspan><tspan fill="#bac2de">   List Trust Domains</tspan></text>
+      <text x="64" y="222"><tspan fill="#89b4fa" font-weight="700">GET</tspan><tspan fill="#bac2de">   Get OIDC Discovery</tspan></text>
+      <text x="64" y="244"><tspan fill="#89b4fa" font-weight="700">GET</tspan><tspan fill="#bac2de">   Get JWKS</tspan></text>
+    </g>
+    <text x="30" y="276">▸ 📁 02 - Server Groups</text>
+    <text x="30" y="306">▸ 📁 03 - Node Groups</text>
+    <text x="30" y="336">▸ 📁 04 - Servers (Components)</text>
+    <text x="30" y="366">▸ 📁 05 - Workload SVID (test)</text>
+    <text x="30" y="396">▸ 📁 06 - authn-jwt (SWA)</text>
+    <line x1="24" y1="416" x2="292" y2="416" stroke="#313244"/>
+    <text x="30" y="442" fill="#9399b2">⚙ environments / example</text>
+  </g>
+
+  <!-- main panel -->
+  <!-- request line -->
+  <rect x="328" y="68" width="600" height="40" rx="8" fill="#11111b" stroke="#313244"/>
+  <rect x="340" y="78" width="56" height="20" rx="5" fill="#a6e3a1"/>
+  <text x="368" y="92" fill="#11111b" font-size="12" font-weight="800" text-anchor="middle">POST</text>
+  <text x="408" y="93" fill="#cdd6f4" font-size="13" font-family="monospace">{{SWA_API_BASE}}/api/swa/trust-domains</text>
+  <rect x="852" y="76" width="64" height="24" rx="6" fill="#f9e2af"/>
+  <text x="884" y="92" fill="#11111b" font-size="12" font-weight="800" text-anchor="middle">Send</text>
+
+  <!-- tabs -->
+  <g font-size="12.5">
+    <text x="340" y="134" fill="#bac2de">Headers</text>
+    <text x="404" y="134" fill="#bac2de">Body</text>
+    <text x="452" y="134" fill="#f9e2af" font-weight="700">Docs</text>
+    <line x1="448" y1="142" x2="486" y2="142" stroke="#f9e2af" stroke-width="2"/>
+  </g>
+
+  <!-- docs card -->
+  <rect x="328" y="150" width="600" height="150" rx="8" fill="#1e1e2e" stroke="#313244"/>
+  <text x="344" y="174" fill="#cdd6f4" font-size="13" font-weight="700"># Create Trust Domain</text>
+  <text x="344" y="196" fill="#9399b2" font-size="12">Root of SPIFFE trust: signing keys, TTLs and the public</text>
+  <text x="344" y="214" fill="#9399b2" font-size="12">discovery endpoints (.well-known) used to validate SVIDs.</text>
+  <text x="344" y="238" fill="#9399b2" font-size="12">Parent of: Server Group → Node Group → Server.</text>
+  <text x="344" y="268" fill="#a6adc8" font-size="11.5" font-family="monospace">201 Created · 409 if it already exists</text>
+
+  <!-- response -->
+  <rect x="328" y="314" width="600" height="120" rx="8" fill="#11111b" stroke="#313244"/>
+  <rect x="328" y="314" width="600" height="26" rx="8" fill="#11111b"/>
+  <text x="344" y="332" fill="#a6e3a1" font-size="12" font-weight="700">● 201 Created</text>
+  <text x="470" y="332" fill="#6c7086" font-size="11">142 ms · 318 B</text>
+  <g font-family="monospace" font-size="11.5" fill="#bac2de">
+    <text x="344" y="360"><tspan fill="#6c7086">{</tspan></text>
+    <text x="360" y="378"><tspan fill="#89b4fa">"name"</tspan>: <tspan fill="#a6e3a1">"example.machineid"</tspan>,</text>
+    <text x="360" y="396"><tspan fill="#89b4fa">"jwt"</tspan>: { <tspan fill="#89b4fa">"signature_algorithm"</tspan>: <tspan fill="#a6e3a1">"RS512"</tspan> },</text>
+    <text x="360" y="414"><tspan fill="#89b4fa">"created_at"</tspan>: <tspan fill="#a6e3a1">"2026-01-01T00:00:00Z"</tspan></text>
+    <text x="344" y="430"><tspan fill="#6c7086">}</tspan></text>
+  </g>
+
+  <!-- flow strip -->
+  <text x="328" y="468" fill="#9399b2" font-size="11.5" letter-spacing="1" font-weight="700">RUN ORDER</text>
+  <g font-size="11.5" font-weight="700">
+    <rect x="328" y="478" width="92" height="30" rx="15" fill="#313244"/><text x="374" y="497" fill="#f9e2af" text-anchor="middle">Trust Domain</text>
+    <text x="426" y="497" fill="#6c7086" text-anchor="middle">→</text>
+    <rect x="440" y="478" width="96" height="30" rx="15" fill="#313244"/><text x="488" y="497" fill="#cdd6f4" text-anchor="middle">Server Group</text>
+    <text x="542" y="497" fill="#6c7086" text-anchor="middle">→</text>
+    <rect x="556" y="478" width="90" height="30" rx="15" fill="#313244"/><text x="601" y="497" fill="#cdd6f4" text-anchor="middle">Node Group</text>
+    <text x="652" y="497" fill="#6c7086" text-anchor="middle">→</text>
+    <rect x="666" y="478" width="70" height="30" rx="15" fill="#313244"/><text x="701" y="497" fill="#cdd6f4" text-anchor="middle">Server</text>
+    <text x="742" y="497" fill="#6c7086" text-anchor="middle">→</text>
+    <rect x="756" y="478" width="92" height="30" rx="15" fill="#313244"/><text x="802" y="497" fill="#a6e3a1" text-anchor="middle">authn-jwt</text>
+  </g>
+
+  <!-- footer note -->
+  <text x="328" y="540" fill="#585b70" font-size="11">Illustrative overview — not a live screen capture. Replace with your own Bruno screenshot/GIF if you prefer.</text>
+</svg>

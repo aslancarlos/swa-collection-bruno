@@ -23,6 +23,16 @@ SPIFFE workloads can authenticate and read secrets.
 
 ---
 
+## Preview
+
+![Secure Workload Access collection in Bruno — folder tree 00→06, a Create Trust Domain request with its docs, and the run order](assets/bruno-collection.svg)
+
+> *Illustrative overview of the collection in Bruno (folder tree, a request with its docs,
+> and the run order) — not a live screen capture. To show a real one, record a screenshot or
+> GIF of your own Bruno window, drop it into `assets/`, and point this image at it.*
+
+---
+
 ## Table of contents
 
 - [What is Secure Workload Access?](#what-is-secure-workload-access)
